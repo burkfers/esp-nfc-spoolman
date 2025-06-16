@@ -28,6 +28,7 @@ _POSTAMBLE = const(0x00)
 _HOSTTOPN532 = const(0xD4)
 _PN532TOHOST = const(0xD5)
 
+_COMMAND_GETFIRMWAREVERSION = const(0x02)
 _COMMAND_INLISTPASSIVETARGET = const(0x4A)
 _COMMAND_INDATAEXCHANGE = const(0x40)
 
@@ -157,6 +158,16 @@ class PN532:
         if not response or not (response[0] == _PN532TOHOST and response[1] == (command+1)):
             return None
         return response[2:]
+    
+    def get_firmware_version(self):
+        """Call PN532 GetFirmwareVersion function and return a tuple with the IC,
+        Ver, Rev, and Support values.
+        """
+        response = self.call_function(
+            _COMMAND_GETFIRMWAREVERSION, 4, timeout=500)
+        if response is None:
+            raise RuntimeError('Failed to detect the PN532')
+        return tuple(response)
 
     def read_passive_target(self, card_baud=_MIFARE_ISO14443A, timeout=1000):
         try:
