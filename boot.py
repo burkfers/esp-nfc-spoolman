@@ -60,12 +60,14 @@ while True:
             except Exception as e:
                 set_led_timer(LED_ERROR)
                 print("NFC read failed, retrying...")
-                i += 1
+                i = 1 # reset the loop breaking counter if we failed to read NFC data
                 continue
         if raw is None:
-            # timed out - no tag nearby
+            # timed out because no tag nearby, OR Ctrl-C was pressed
+            i += 1
             print("No NFC data read, retrying...")
             continue
+        i = 1 # reset the loop breaking counter if we successfully read NFC data, even if it is invalid
         set_led_timer(LED_WAIT)
         data = parse_nfc(raw)
         result = find_spool_filament(data)
