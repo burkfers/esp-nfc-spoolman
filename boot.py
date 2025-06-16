@@ -5,47 +5,49 @@ gc.collect()
 
 from pn532 import setup_pn532
 
-from ledcontrol import led_off, led_error, led_ok, led_wait
-led_wait()
+from ledcontrol import set_led, LED_READY, LED_OK, LED_WAIT, LED_ERROR
+set_led(LED_WAIT)
 
 from nfc_data import find_spool_filament, parse_nfc
 import wifi
 print("Setting up WiFi...")
 wifi.setup()
-if wifi.wait_for_wifi():
-    led_ok()
-else:
-    led_error()
+if not wifi.wait_for_wifi():
+    set_led(LED_ERROR)
+    print("Failed to connect to WiFi, exiting.")
 
 from nfc_data import read_nfc_raw, read_nfc_raw_dummy
 from moonraker import set_next_spoolid
 from config import DUMMY
 
 print("Setting up PN532 NFC reader...")
-led_wait()
 pn532 = setup_pn532()
-led_ok()
-sleep(1)
+set_led(LED_READY)
 
-loop_led = 'wait'
+def set_led_timer(status):
+    global led_timer
+    led_timer = time.ticks_ms()
+    set_led(status)
 
 i = 1
 start_time = time.ticks_ms()
+led_timer = None
+
 while True:
-    if loop_led == 'wait':
-        led_wait()
-    elif loop_led == 'ok':
-        led_ok()
-    elif loop_led == 'error':
-        led_error()
-    loop_led = 'wait'
     try:
-        # Reset i after 10 seconds
-        if time.ticks_diff(time.ticks_ms(), start_time) > 10000:
+        # Since Ctrl-C only stops the NFC read returning None instead of exiting,
+        # we break the loop if we've iterated 10 times in the span of 5 seconds
+        # Simply hammer Ctrl-C on the console to get the REPL.
+        if time.ticks_diff(time.ticks_ms(), start_time) > 5000:
             i = 1
             start_time = time.ticks_ms()
         if i >= 10: break
         i += 1
+
+        # reset the LED every 5 seconds
+        if led_timer and time.ticks_diff(time.ticks_ms(), led_timer) > 5000:
+            led_timer = None
+            set_led(LED_READY)
 
         if DUMMY:
             from nfc_data import read_nfc_raw_dummy
@@ -56,27 +58,30 @@ while True:
             try:
                 raw = read_nfc_raw(pn532, 500)
             except Exception as e:
+                set_led_timer(LED_ERROR)
                 print("NFC read failed, retrying...")
                 i += 1
                 continue
         if raw is None:
+            # timed out - no tag nearby
             print("No NFC data read, retrying...")
-            loop_led = 'wait'
             continue
+        set_led_timer(LED_WAIT)
         data = parse_nfc(raw)
         result = find_spool_filament(data)
         if result is None:
-            loop_led = 'error'
+            set_led_timer(LED_ERROR)
             print("No SPOOL/FILAMENT data found.")
             continue
         else:
             spool_id = result[0]
             print("SPOOL_ID found:", spool_id)
             if set_next_spoolid(spool_id):
-                loop_led = 'ok'
+                set_led_timer(LED_OK)
                 print("Spool ID {spool_id} for next gate set successfully.")
+                sleep(5) # Don't immediately read again
             else:
-                led_error()
+                set_led_timer(LED_ERROR)
         if DUMMY: break
         gc.collect()
         sleep(0.5)
@@ -84,5 +89,6 @@ while True:
         if isinstance(e, KeyboardInterrupt):
             print("KeyboardInterrupt received, exiting loop.")
             break
+        set_led_timer(LED_ERROR)
         print("Error during NFC processing:", type(e).__name__, e)
 

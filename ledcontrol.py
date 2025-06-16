@@ -1,4 +1,5 @@
-from config import LED_TYPE
+from config import LED_TYPE, LED_STEALTH
+
 
 if LED_TYPE == 'neopixel':    
     def set_led(color):
@@ -10,18 +11,14 @@ if LED_TYPE == 'neopixel':
         np[0] = color  # color should be (R, G, B)
         np.write()
 
-    def led_off():
-        set_led((0, 0, 0))
+    if LED_STEALTH:
+        LED_READY = (0, 0, 0)
+    else:
+        LED_READY = (0, 0, 255)
+    LED_OK = (0, 255, 0)
+    LED_WAIT = (0, 0, 255)
+    LED_ERROR = (255, 0, 0)
 
-    def led_error():
-        set_led((255, 0, 0))
-
-    def led_ok():
-        set_led((0, 255, 0))
-
-    def led_wait():
-        set_led((0, 0, 255))
-    
 elif LED_TYPE == 'simple':
     from machine import Pin
     from config import LED_SIMPLE_LED_PINS as PINS
@@ -35,27 +32,21 @@ elif LED_TYPE == 'simple':
     def set_led(*p):
         for i in range(len(p)):
             LEDS[i].value(p[i])
-    def led_off():
-        set_led(0,0,0)
 
-    def led_error():
-        set_led(1,0,0)
-
-    def led_ok():
-        set_led(0,1,0)
-
-    def led_wait():
-        set_led(0,0,1)
+    if LED_STEALTH:
+        LED_READY = (0, 0, 0)
+    else:
+        LED_READY = (0, 0, 1)
+    LED_OK = (0, 1, 0)
+    LED_WAIT = (0, 0, 1)
+    LED_ERROR = (1, 0, 0)
 
 else:
-    def led_off():
-        pass
 
-    def led_error():
+    def set_led(dummy):
+        """Dummy function for no LED setup."""
         pass
-
-    def led_ok():
-        pass
-
-    def led_wait():
-        pass
+    LED_READY = None
+    LED_OK = None
+    LED_WAIT = None
+    LED_ERROR = None

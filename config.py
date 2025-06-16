@@ -17,3 +17,4 @@ LED_SIMPLE_LED_PINS = [23, 22, 21]  # GPIO pins for simple LED setup in the orde
 # If LED_TYPE is 'neopixel', specify the GPIO pin for the WS2812 LED.
 LED_NEOPIXEL_GPIO = 5  # GPIO pin for WS2812 LED
 # If LED_TYPE is None, no LED will be used.
+LED_STEALTH = True  # Set to True to turn off the LED in ready mode (neopixel or simple))
