@@ -50,7 +50,8 @@ ESP8266 Wiring
 TODO
 
 ## Setup
-TODO
+
+See [SETUP.md](./SETUP.md)
 
 ## Troubleshooting
 You can `ampy run test_pn532.py` to check for communication with the NFC module. If you don't see
