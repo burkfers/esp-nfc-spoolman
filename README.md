@@ -16,14 +16,30 @@ nfc2klipper is nice, but I wanted to avoid running wires all the way from the to
 
 ## BOM (bill of materials)
 
-- Wemos D1 Mini (ESP8266) or 38-Pin ESP32C \[ [Amazon US](https://www.amazon.com/dp/B09J95SMG7) \]
-  - Will likely work on any ESP-type controller with minimal changes
-- PN532 module \[ [Aliexpress](https://www.aliexpress.com/item/1005007182056113.html) \]
-- A single neopixel, such as an SK6812 Mini-E, or three dumb LEDs (optional)
-- A handful of wiring, soldering and crimping supplies
+| Name | Quantity | Link |
+| - | - | - |
+| ESPxxxx | 1 | [ESP32](https://a.co/d/i2e4Yh6) or [ESP8266](https://a.co/d/aY65q75) |
+| PN532 Reader | 1 | [Amazon](https://a.co/d/1GwTvsT) [Aliexpress](https://www.aliexpress.com/item/1005007182056113.html) |
+| LED | 1 | See below |
+| A handful of wiring, soldering and crimping supplies | | |
+
+### LED BOM (Neopixel)
+
+| Name | Quantity | Link |
+| - | - | - |
+| WS2812B LED | 1 | [Amazon](https://a.co/d/6XfH9Zn) |
+
+### LED BOM (RGB Led)
+
+| Name | Quantity | Link |
+| - | - | - |
+| RGB Led | 1 | [Amazon](https://a.co/d/e1wHlhK) |
+| 220Ω Resistor | 3 | [Amazon](https://a.co/d/3rpyEVH) |
 
 ## Build
 TODO
+
+### Wiring
 
 ## Setup
 TODO
