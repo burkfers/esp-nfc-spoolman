@@ -41,7 +41,7 @@ TODO
 
 ### Wiring
 
-ESP32 Wiring
+ESP32 Wiring with WS2812B neopixel
 
 ![](images/ESP32%20Diagram.png)
 
