@@ -41,6 +41,14 @@ TODO
 
 ### Wiring
 
+ESP32 Wiring
+
+![](images/ESP32%20Diagram.png)
+
+ESP8266 Wiring
+
+TODO
+
 ## Setup
 TODO
 
