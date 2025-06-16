@@ -18,8 +18,8 @@ nfc2klipper is nice, but I wanted to avoid running wires all the way from the to
 
 | Name | Quantity | Link |
 | - | - | - |
-| ESPxxxx | 1 | [ESP32](https://a.co/d/i2e4Yh6) or [ESP8266](https://a.co/d/aY65q75) |
-| PN532 Reader | 1 | [Amazon](https://a.co/d/1GwTvsT) [Aliexpress](https://www.aliexpress.com/item/1005007182056113.html) |
+| ESPxxxx | 1 | [ESP32 (Amazon US)](https://a.co/d/i2e4Yh6) [ESP8266 (Amazon US)](https://a.co/d/fgC2XPE) [ESP8266 (Amazon DE)](https://a.co/d/930Fsel) |
+| PN532 Reader | 1 | [Amazon US](https://a.co/d/1GwTvsT) [Aliexpress](https://www.aliexpress.com/item/1005007182056113.html) |
 | LED | 1 | See below |
 | A handful of wiring, soldering and crimping supplies | | |
 
@@ -33,8 +33,8 @@ nfc2klipper is nice, but I wanted to avoid running wires all the way from the to
 
 | Name | Quantity | Link |
 | - | - | - |
-| RGB Led | 1 | [Amazon](https://a.co/d/e1wHlhK) |
-| 220Ω Resistor | 3 | [Amazon](https://a.co/d/3rpyEVH) |
+| RGB Led | 1 | [Amazon US](https://a.co/d/e1wHlhK) |
+| 220Ω Resistor | 3 | [Amazon US](https://a.co/d/3rpyEVH) |
 
 ## Build
 TODO
