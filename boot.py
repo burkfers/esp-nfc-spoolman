@@ -57,6 +57,9 @@ while True:
             print("Reading NFC data...")
             try:
                 raw = read_nfc_raw(pn532, 500)
+            except KeyboardInterrupt:
+                print("KeyboardInterrupt received, exiting")
+                break
             except Exception as e:
                 set_led_timer(LED_ERROR)
                 print("NFC read failed, retrying...")

@@ -158,7 +158,7 @@ class PN532:
         if not response or not (response[0] == _PN532TOHOST and response[1] == (command+1)):
             return None
         return response[2:]
-    
+
     def get_firmware_version(self):
         """Call PN532 GetFirmwareVersion function and return a tuple with the IC,
         Ver, Rev, and Support values.
@@ -175,7 +175,9 @@ class PN532:
                                           params=[0x01, card_baud],
                                           response_length=19,
                                           timeout=timeout)
-        except:
+        except Exception as e:
+            if isinstance(e, KeyboardInterrupt):
+                raise e
             return None
         if response is None:
             return None
