@@ -6,6 +6,7 @@ gc.collect()
 from pn532 import setup_pn532
 
 from ledcontrol import set_led, LED_READY, LED_OK, LED_WAIT, LED_ERROR
+from ledcontrol import led_timer as flash_led_timer
 set_led(LED_WAIT)
 
 from nfc_data import find_spool_filament, parse_nfc
@@ -22,6 +23,11 @@ from config import DUMMY
 
 print("Setting up PN532 NFC reader...")
 pn532 = setup_pn532()
+ic, ver, rev, support = pn532.get_firmware_version()
+print('Found PN532 with firmware version: {0}.{1}'.format(ver, rev))
+
+flash_led_timer.deinit()
+
 set_led(LED_READY)
 
 def set_led_timer(status):
@@ -29,8 +35,6 @@ def set_led_timer(status):
     led_timer = time.ticks_ms()
     set_led(status)
 
-i = 1
-start_time = time.ticks_ms()
 led_timer = None
 
 while True:
@@ -38,11 +42,6 @@ while True:
         # Since Ctrl-C only stops the NFC read returning None instead of exiting,
         # we break the loop if we've iterated 10 times in the span of 5 seconds
         # Simply hammer Ctrl-C on the console to get the REPL.
-        if time.ticks_diff(time.ticks_ms(), start_time) > 5000:
-            i = 1
-            start_time = time.ticks_ms()
-        if i >= 10: break
-        i += 1
 
         # reset the LED every 5 seconds
         if led_timer and time.ticks_diff(time.ticks_ms(), led_timer) > 5000:
@@ -63,14 +62,11 @@ while True:
             except Exception as e:
                 set_led_timer(LED_ERROR)
                 print("NFC read failed, retrying...")
-                i = 1 # reset the loop breaking counter if we failed to read NFC data
                 continue
         if raw is None:
             # timed out because no tag nearby, OR Ctrl-C was pressed
-            i += 1
             print("No NFC data read, retrying...")
             continue
-        i = 1 # reset the loop breaking counter if we successfully read NFC data, even if it is invalid
         set_led_timer(LED_WAIT)
         data = parse_nfc(raw)
         result = find_spool_filament(data)
@@ -97,3 +93,5 @@ while True:
         set_led_timer(LED_ERROR)
         print("Error during NFC processing:", type(e).__name__, e)
 
+
+print("Script end")
