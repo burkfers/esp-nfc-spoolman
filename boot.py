@@ -23,8 +23,13 @@ from config import DUMMY
 
 print("Setting up PN532 NFC reader...")
 pn532 = setup_pn532()
-ic, ver, rev, support = pn532.get_firmware_version()
-print('Found PN532 with firmware version: {0}.{1}'.format(ver, rev))
+try:
+    ic, ver, rev, support = pn532.get_firmware_version()
+    print('Found PN532 with firmware version: {0}.{1}'.format(ver, rev))
+except:
+    flash_led_timer.deinit()
+    set_led(LED_ERROR)
+    raise
 
 flash_led_timer.deinit()
 
@@ -95,3 +100,4 @@ while True:
 
 
 print("Script end")
+
