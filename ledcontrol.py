@@ -1,7 +1,8 @@
 from config import LED_TYPE, LED_STEALTH
+from machine import Timer
 
 
-if LED_TYPE == 'neopixel':    
+if LED_TYPE == 'neopixel':
     def set_led(color):
         import machine
         import neopixel
@@ -18,6 +19,7 @@ if LED_TYPE == 'neopixel':
     LED_OK = (0, 255, 0)
     LED_WAIT = (0, 0, 255)
     LED_ERROR = (255, 0, 0)
+    LED_OFF = (0, 0, 0)
 
 elif LED_TYPE == 'simple':
     from machine import Pin
@@ -29,7 +31,7 @@ elif LED_TYPE == 'simple':
         Pin(PINS[2], Pin.OUT),
     ]
 
-    def set_led(*p):
+    def set_led(p):
         for i in range(len(p)):
             LEDS[i].value(p[i])
 
@@ -40,6 +42,7 @@ elif LED_TYPE == 'simple':
     LED_OK = (0, 1, 0)
     LED_WAIT = (0, 0, 1)
     LED_ERROR = (1, 0, 0)
+    LED_OFF = (0, 0, 0)
 
 else:
 
@@ -50,3 +53,17 @@ else:
     LED_OK = None
     LED_WAIT = None
     LED_ERROR = None
+    LED_OFF = None
+
+_last_led = 'off'
+def led_timer_callback(timer):
+    global _last_led
+    if _last_led == 'off':
+        set_led(LED_WAIT)
+        _last_led = 'wait'
+    else:
+        set_led(LED_OFF)
+        _last_led = 'off'
+
+led_timer = Timer(0)
+led_timer.init(period=250, mode=Timer.PERIODIC, callback=led_timer_callback)
